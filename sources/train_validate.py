@@ -130,14 +130,19 @@ def evaluate(_model, corpus, val_data, criterion, args):
     _model.eval()
     total_loss = 0.
     ntokens = len(corpus.dictionary)
-    hidden = _model.init_hidden(10)
+    if 'FFNN' not in args.model:
+        hidden = _model.init_hidden(10)
     with torch.no_grad():
         for i in range(0, val_data.size(0) - 1, args.bptt):
             _data, targets = get_batch(val_data, i)
-            output, hidden = _model(_data, hidden)
+            if 'FFNN' not in args.model:
+                output, hidden = _model(_data, hidden)
+            else:
+                output = _model(_data)
             output_flat = output.view(-1, ntokens)
             total_loss += len(_data) * criterion(output_flat, targets).item()
-            hidden = repackage_hidden(hidden)
+            if 'FFNN' not in args.model:
+                hidden = repackage_hidden(hidden)
 
     return total_loss / (len(val_data) - 1)
 
