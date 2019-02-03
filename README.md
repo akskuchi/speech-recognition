@@ -8,7 +8,7 @@
 
 **Dataset**: [English Gigaword Corpus](https://catalog.ldc.upenn.edu/LDC2003T05)
 
-***Experiments**: Uses RNNs and availability to run using FFNN  
+**Experiments**: Uses RNNs and availability to run using FFNN  
 
 ----
 
