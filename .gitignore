@@ -1,0 +1,4 @@
+*__pycache__*
+*.idea/
+resources/gigaword_corpus/*
+resources/models/*
