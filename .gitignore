@@ -1,3 +1,4 @@
+*run.sh
 *__pycache__*
 *.idea/
 resources/gigaword_corpus/*
