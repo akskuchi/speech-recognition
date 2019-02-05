@@ -104,7 +104,8 @@ class RNNModelOriginal(nn.Module):
         super(RNNModelOriginal, self).__init__()
         self.drop = nn.Dropout(dropout)
         self.encoder = nn.Embedding(ntoken, ninp)
-        self.decoder = nn.Linear(nhid, ntoken)
+        self.num_directions = 2 if bi_dir else 1
+        self.decoder = nn.Linear(nhid * self.num_directions, ntoken)
 
         if tie_weights:
             assert nhid == ninp
@@ -144,13 +145,14 @@ class RNNModelOriginal(nn.Module):
         decoded = self.decoder(output.view(output.size(0) * output.size(1), output.size(2)))
         return decoded.view(output.size(0), output.size(1), decoded.size(1)), hidden
 
-    def init_hidden(self, bsz):
+    def init_hidden(self, bsz, bi_dir=False):
         weight = next(self.parameters())
+        num_directions = 2 if bi_dir else 1
         if self.rnn_type == 'LSTM':
-            return (weight.new_zeros(self.nlayers, bsz, self.nhid),
-                    weight.new_zeros(self.nlayers, bsz, self.nhid))
+            return (weight.new_zeros(self.nlayers * num_directions, bsz, self.nhid),
+                    weight.new_zeros(self.nlayers * num_directions, bsz, self.nhid))
         else:
-            return weight.new_zeros(self.nlayers, bsz, self.nhid)
+            return weight.new_zeros(self.nlayers * num_directions, bsz, self.nhid)
 
 
 class FFNNModel(nn.Module):

@@ -94,7 +94,7 @@ def train(_model, corpus, train_data, criterion, args, epoch):
     start_time = time.time()
     ntokens = len(corpus.dictionary)
     if 'FFNN' not in args.model:
-        hidden = _model.init_hidden(args.batch_size)
+        hidden = _model.init_hidden(args.batch_size, args.bi_dir)
     for batch, i in enumerate(range(0, train_data.size(0) - 1, args.bptt)):
         _data, targets = get_batch(train_data, i)
         if 'FFNN' not in args.model:
@@ -131,7 +131,7 @@ def evaluate(_model, corpus, val_data, criterion, args):
     total_loss = 0.
     ntokens = len(corpus.dictionary)
     if 'FFNN' not in args.model:
-        hidden = _model.init_hidden(10)
+        hidden = _model.init_hidden(10, args.bi_dir)
     with torch.no_grad():
         for i in range(0, val_data.size(0) - 1, args.bptt):
             _data, targets = get_batch(val_data, i)
@@ -186,7 +186,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='PyTorch RNN Language Model for English Gigaword corpus')
     parser.add_argument('--data', type=str, default='../resources/gigaword_corpus',
                         help='location of the data corpus')
-    parser.add_argument('--model', type=str, default='FFNN',
+    parser.add_argument('--model', type=str, default='GRU',
                         help='type of recurrent net (RNN_TANH, RNN_RELU, LSTM, GRU)')
     parser.add_argument('--emsize', type=int, default=200,
                         help='size of word embeddings (if 0: OneHot instead of embeddings)')
