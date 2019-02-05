@@ -162,7 +162,7 @@ def main(args):
     if 'FFNN' in args.model:
         _model = model.FFNNModel(ntokens, args.emsize, args.nhid, args.nlayers, args.dropout, args.tied).to(device)
     else:
-        _model = model.RNNModelOriginal(args.model, ntokens, args.emsize, args.nhid, args.nlayers, args.dropout, args.tied).to(device)
+        _model = model.RNNModelOriginal(args.model, ntokens, args.emsize, args.nhid, args.nlayers, args.dropout, args.tied, args.bi_dir).to(device)
 
     best_val_loss = None
     for epoch in range(1, args.epochs + 1):
@@ -190,6 +190,8 @@ if __name__ == '__main__':
                         help='type of recurrent net (RNN_TANH, RNN_RELU, LSTM, GRU)')
     parser.add_argument('--emsize', type=int, default=200,
                         help='size of word embeddings (if 0: OneHot instead of embeddings)')
+    parser.add_argument('--bi_dir', type=bool, default=True,
+                        help='bidirectionality of the RNN cell')
     parser.add_argument('--nhid', type=int, default=60,
                         help='number of hidden units per layer')
     parser.add_argument('--vthreshold', type=int, default=20,
