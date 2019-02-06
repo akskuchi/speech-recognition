@@ -58,7 +58,7 @@ def main(args):
     test_data = construct_batches(corpus.test, 10)
     ntokens = len(corpus.dictionary)
 
-    _model = model.RNNModelOriginal(args.model, ntokens, args.emsize, args.nhid, args.nlayers, args.dropout, args.tied).to(device)
+    _model = model.RNNModelOriginal(args.model, ntokens, args.emsize, args.nhid, args.nlayers, args.dropout, args.tied, args.bi_dir).to(device)
     _model.load_state_dict(torch.load(args.save, map_location=lambda storage, loc: storage))
 
     test_loss = evaluate(_model, corpus, test_data, nn.CrossEntropyLoss(), args)
@@ -67,12 +67,14 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='PyTorch RNN Language Model for English Gigaword corpus')
-    parser.add_argument('--data', type=str, default='../../data/gigaword_corpus',
+    parser.add_argument('--data', type=str, default='../resources/gigaword_corpus',
                         help='location of the data corpus')
     parser.add_argument('--model', type=str, default='GRU',
                         help='type of recurrent net (RNN_TANH, RNN_RELU, LSTM, GRU)')
     parser.add_argument('--emsize', type=int, default=200,
                         help='size of word embeddings (if 0: OneHot instead of embeddings)')
+    parser.add_argument('--bi_dir', type=bool, default=True,
+                        help='bidirectionality of the RNN cell')
     parser.add_argument('--nhid', type=int, default=60,
                         help='number of hidden units per layer')
     parser.add_argument('--vthreshold', type=int, default=20,
@@ -100,7 +102,7 @@ if __name__ == '__main__':
                         help='random seed')
     parser.add_argument('--log-interval', type=int, default=200, metavar='N',
                         help='report interval')
-    parser.add_argument('--save', type=str, default='/Users/kaushiksurikuchi/Downloads/gigaword_60_20_1.pt',
+    parser.add_argument('--save', type=str, default='../resources/models/gigaword_60_20_1_bd.pt',
                         help='path to save the final model')
     parser.add_argument('--onnx-export', type=str, default='',
                         help='path to export the final model in onnx format')
